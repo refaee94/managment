@@ -14,7 +14,7 @@ namespace WebApplication7.Models
     
     public partial class Image
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string fileName { get; set; }
         public string Url { get; set; }
         public Nullable<int> inquiry { get; set; }

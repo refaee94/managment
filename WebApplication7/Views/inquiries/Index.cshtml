@@ -23,9 +23,12 @@
         </th>
         <th>
             @Html.DisplayNameFor(model => model.AspNetUser.Email)
+
         <th>
-            File
+            Approved
+
         </th>
+
         <th></th>
     </tr>
 
@@ -44,23 +47,24 @@
             <td>
                 @Html.DisplayFor(modelItem => item.AspNetUser.Email)
             </td>
-            @*<td>
-                    <a href="@item.Images.ElementAt(0).Url"> @Html.DisplayNameFor(model => model.Images.ElementAt(0).fileName)</a>
-                </td>*@
-        <td>
-            @{if (ViewBag.isAdmin == true)
-                {
-                    @Html.ActionLink("Edit", "Edit", new
+            <td>
+                @Html.DisplayFor(modelItem => item.Approved)
+            </td>
+
+            <td>
+                @{if (ViewBag.isAdmin == true)
                     {
-                        id = item.Id
-                    }); <text>|</text>
+                        @Html.ActionLink("Edit", "Edit", new
+                        {
+                            id = item.Id
+                        }); <text>|</text>
 
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id });
-                    <text>|</text> }
+                        @Html.ActionLink("Delete", "Delete", new { id = item.Id });
+                        <text>|</text>
 
-            }                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-
-        </td>
+                        @Html.ActionLink("Details", "Details", new { id = item.Id }) }
+                }
+            </td>
         </tr>
     }
 

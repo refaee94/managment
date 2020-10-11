@@ -31,7 +31,7 @@ namespace WebApplication7.Models
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<inquiry> inquiries { get; set; }
         public virtual DbSet<C__MigrationHistory1> C__MigrationHistory1 { get; set; }
-        public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<sysdiagram1> sysdiagram1 { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
     }
 }

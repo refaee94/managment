@@ -25,6 +25,7 @@ namespace WebApplication7.Models
         public string Company { get; set; }
         public string Employee { get; set; }
         public System.DateTime CreationDate { get; set; }
+        public Nullable<bool> Approved { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

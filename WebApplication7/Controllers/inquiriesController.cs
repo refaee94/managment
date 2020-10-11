@@ -22,10 +22,13 @@ namespace WebApplication7.Controllers
         {
             var inquiries = db.inquiries.Include(i => i.AspNetUser);
             var id = HttpContext.User.Identity.GetUserId();
+            var isAccountent = HttpContext.User.IsInRole("ACCOUNTENT");
+
             var isAdmin = HttpContext.User.IsInRole("ADMIN");
-            if (!isAdmin)
+            if (!isAdmin && !isAccountent)
                 inquiries = inquiries.Where(i => i.Employee == id);
             ViewBag.isAdmin = isAdmin;
+            ViewBag.isAccountent = isAccountent;
             return View(inquiries.ToList());
         }
 
@@ -76,6 +79,7 @@ namespace WebApplication7.Controllers
 
                 inquiry.Employee = HttpContext.User.Identity.GetUserId();
                 inquiry.CreationDate = DateTime.Now.Date;
+                inquiry.Approved = false;
                 db.inquiries.Add(inquiry);
 
                 db.SaveChanges();
@@ -107,7 +111,7 @@ namespace WebApplication7.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Company,Employee,CreationDate")] inquiry inquiry)
+        public ActionResult Edit([Bind(Include = "Id,Title,Company,Employee,CreationDate,Approved")] inquiry inquiry)
         {
             if (ModelState.IsValid)
             {

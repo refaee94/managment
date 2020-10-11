@@ -4,7 +4,7 @@
 	<edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
 		<!-- Diagram content (shape and connector positions) -->
 		<edmx:Diagrams>
-			<Diagram DiagramId="75e697bbbea94425917189c50de73439" Name="Diagram1" ZoomLevel="95">
+			<Diagram DiagramId="75e697bbbea94425917189c50de73439" Name="Diagram1" ZoomLevel="91">
 				<EntityTypeShape EntityType="AccountingModel.AspNetRole" Width="1.5" PointX="0.75" PointY="4.125" IsExpanded="true" />
 				<EntityTypeShape EntityType="AccountingModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
 				<EntityTypeShape EntityType="AccountingModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
@@ -16,10 +16,10 @@
 				<AssociationConnector Association="AccountingModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
 				<AssociationConnector Association="AccountingModel.FK_inquiry_AspNetUsers" ManuallyRouted="false" />
 				<EntityTypeShape EntityType="AccountingModel.C__MigrationHistory1" PointX="9.375" PointY="3.75" Width="1.5" />
-				<EntityTypeShape EntityType="AccountingModel.Image" Width="1.5" PointX="7.5" PointY="6.75" />
-				<AssociationConnector Association="AccountingModel.FK_Images_Images" />
 				<AssociationConnector Association="AccountingModel.AspNetUserRoles1" />
 				<EntityTypeShape EntityType="AccountingModel.sysdiagram1" PointX="7.375" PointY="3.75" Width="1.5" />
+        <EntityTypeShape EntityType="AccountingModel.Image" Width="1.5" PointX="7.5" PointY="6.75" />
+        <AssociationConnector Association="AccountingModel.FK_Images_Images" />
 			</Diagram>
 		</edmx:Diagrams>
 	</edmx:Designer>

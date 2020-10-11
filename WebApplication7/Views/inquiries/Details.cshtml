@@ -44,6 +44,17 @@
         </dd>
 
     </dl>
+
+    @foreach (var item in Model.Images)
+    {
+
+        {<a download="@item.Url" href="@item.Url"> @item.fileName</a>
+
+
+    }
+
+}
+
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |

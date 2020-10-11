@@ -17,12 +17,13 @@ namespace WebApplication7.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private AccountingEntities1 db = new AccountingEntities1();
 
         public AccountController()
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +35,9 @@ namespace WebApplication7.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -73,13 +74,31 @@ namespace WebApplication7.Controllers
                 return View(model);
             }
 
+            var user = db.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefault();
+
+            if (user != null)
+            {
+                var islogged = user.logged;
+                if (islogged == true)
+                {
+                    return View("you are already Logged in");
+
+
+                }
+
+
+            }
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    {
+                        user.logged = true;
+                        db.SaveChanges();
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -120,7 +139,7 @@ namespace WebApplication7.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -139,6 +158,8 @@ namespace WebApplication7.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
+            ViewBag.Name = new SelectList(db.AspNetRoles.Where(u => !u.Name.Contains("Admin"))
+                                      .ToList(), "Name", "Name");
             return View();
         }
 
@@ -153,10 +174,16 @@ namespace WebApplication7.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
+
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    var newUser = db.AspNetUsers.Where(u => u.Email == model.Email).FirstOrDefault();
+
+                    newUser.logged = false;
+                    db.SaveChanges();
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -165,6 +192,8 @@ namespace WebApplication7.Controllers
 
                     return RedirectToAction("Index", "Home");
                 }
+                ViewBag.Name = new SelectList(db.AspNetRoles.Where(u => !u.Name.Contains("Admin"))
+                                .ToList(), "Name", "Name");
                 AddErrors(result);
             }
 
@@ -391,7 +420,13 @@ namespace WebApplication7.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            var userId = HttpContext.User.Identity.GetUserId();
+            var newUser = db.AspNetUsers.Where(u => u.Id == userId).FirstOrDefault();
+
+            newUser.logged = false;
+            db.SaveChanges();
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+
             return RedirectToAction("Index", "Home");
         }
 
