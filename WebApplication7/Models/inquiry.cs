@@ -14,6 +14,12 @@ namespace WebApplication7.Models
     
     public partial class inquiry
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public inquiry()
+        {
+            this.Images = new HashSet<Image>();
+        }
+    
         public int Id { get; set; }
         public string Title { get; set; }
         public string Company { get; set; }
@@ -21,5 +27,7 @@ namespace WebApplication7.Models
         public System.DateTime CreationDate { get; set; }
     
         public virtual AspNetUser AspNetUser { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Image> Images { get; set; }
     }
 }

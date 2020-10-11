@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -21,8 +22,10 @@ namespace WebApplication7.Controllers
         {
             var inquiries = db.inquiries.Include(i => i.AspNetUser);
             var id = HttpContext.User.Identity.GetUserId();
-
-            inquiries = inquiries.Where(i => i.Employee == id);
+            var isAdmin = HttpContext.User.IsInRole("ADMIN");
+            if (!isAdmin)
+                inquiries = inquiries.Where(i => i.Employee == id);
+            ViewBag.isAdmin = isAdmin;
             return View(inquiries.ToList());
         }
 
@@ -55,13 +58,26 @@ namespace WebApplication7.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Title,Company,Employee,CreationDate")] inquiry inquiry)
+        public ActionResult Create([Bind(Include = "Id,Title,Company,Employee,CreationDate")] inquiry inquiry, HttpPostedFileBase files)
         {
             if (ModelState.IsValid)
             {
+                if (files != null && files.ContentLength > 0)
+                {
+                    // extract only the filename
+                    var fileName = Path.GetFileName(files.FileName);
+                    // store the file inside ~/App_Data/uploads folder
+                    var path = Path.Combine(Server.MapPath("~/App_Data/uploads"), fileName);
+                    files.SaveAs(path);
+                    inquiry.Images.Add(new Image { Url = path, fileName = fileName });
+
+                }
+
+
                 inquiry.Employee = HttpContext.User.Identity.GetUserId();
                 inquiry.CreationDate = DateTime.Now.Date;
                 db.inquiries.Add(inquiry);
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }

@@ -12,7 +12,7 @@ namespace WebApplication7.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class C__MigrationHistory
+    public partial class C__MigrationHistory1
     {
         public string MigrationId { get; set; }
         public string ContextKey { get; set; }
